@@ -274,6 +274,95 @@ longContent = do
                 row $ do
                   tag "div" ~ bg Light . pad (XY 10 2) . fontSize 16 . textAlign AlignCenter $ text lang
 
+flexTutorial :: Html ()
+flexTutorial = col ~ grow $ do
+  row  ~ pad 10 . gap 30 $ do
+    col $ do
+      space
+      el "flex-direction: row"
+      flexDir row
+    col $ do
+      space
+      el "flex-direction: column"
+      flexDir col
+    col $ do
+      space
+      el "flex-wrap: wrap"
+      flexWrap' Wrap
+    col $ do
+      space
+      el "flex-wrap: wrap-reverse"
+      flexWrap' WrapReverse
+  row  ~ pad 10 . gap 30 $ do
+    col ~ grow $ do
+      el "flex-grow"
+      flexGrow 
+  row  ~ pad 10 . gap 30 . grow $ do
+    col ~ pad 10 $ do
+      el "flex-start"
+      flexStart
+    col ~ pad 10 . grow $ do
+      el "flex-center"
+      flexCenter
+    col ~ pad 10 . grow $ do
+      el "flex-end"
+      flexEnd
+    col ~ pad 10 . grow $ do
+      el "space-between"
+      spaceBetween
+    col ~ pad 10 . grow $ do
+      el "space-around"
+      spaceAround
+  where
+    box x = el ~ border 1 . pad 10 $ x
+    flexDir dir = do
+      dir ~ border 1 . pad 30 $ do
+        do
+          box "one"
+          box "two"
+          box "three"
+    flexWrap' wrap = do
+      row ~ flexWrap wrap . border 1 . pad 10 $ do
+          box "one"
+          box "two"
+          box "three"
+          box "four"
+          box "five"
+          box "six"
+          box "seven"
+          box "eight"
+          box "nine"
+          box "ten"
+          box "eleven"
+          box "twelve"
+    flexGrow = do
+      row ~ border 1 . pad 30 $ do
+        do
+          box "one"
+          box ~ grow $ "two"
+          box "three"
+    r1 = row $ do
+          box ~ grow $ "one"
+          box ~ grow $ "two"
+          box "three"
+    r2 = row $ do
+          box "four"
+          box "five"
+          box ~ grow $ "six"
+          box "seven"
+    r3 = row $ do
+          box "eight"
+          box "nine"
+    flexStart = box ~ grow $ do
+      r1 >> r2 >> r3
+    flexCenter = col ~ border 1 . pad 10 . grow $ do
+         space >> r1 >> r2 >> r3 >> space
+    flexEnd = col ~ border 1 . pad 10 . grow $ do
+         space >> r1 >> r2 >> r3
+    spaceBetween = col ~ border 1 . pad 10 . grow $ do
+         r1 >> space >> r2 >> space >> r3
+    spaceAround= col ~ border 1 . pad 10 . grow $ do
+         space >> r1 >> space >> r2 >> space >> r3 >> space
 
 -- rows = textAlign AlignCenter . border 1 . borderColor GrayLight
 
@@ -288,6 +377,7 @@ examples = col ~ pad 20 . gap 15 $ do
   link "inputs" "Inputs"
   link "tooltips" "Tooltips"
   link "long-content" "Long Content"
+  link "flexTutorial" "Flex Tutorial"
  where
   link href = tag "a" @ att "href" href ~ color Primary
 
@@ -304,6 +394,7 @@ app req respond = do
     ["inputs"] -> view inputs
     ["tooltips"] -> view tooltips
     ["long-content"] -> view longContent
+    ["flexTutorial"] -> view flexTutorial
     ["static", "reset.css"] -> reset
     _ -> notFound
  where
