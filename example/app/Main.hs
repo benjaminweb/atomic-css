@@ -6,10 +6,13 @@ module Main where
 import Data.ByteString.Lazy (fromStrict)
 import Data.String.Interpolate (i)
 import Data.Text (Text)
+import qualified Data.Text as T
+import Data.List (intersperse)
 import Network.HTTP.Types (status200, status404)
 import Network.Wai
 import Network.Wai.Handler.Warp as Warp
 import Web.Atomic
+import Web.Atomic.Html
 
 
 main :: IO ()
@@ -254,6 +257,35 @@ texts = col ~ gap 10 . pad 20 $ do
 lorem :: Text
 lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
 
+whiteSpaceText :: Html ()
+whiteSpaceText = do
+    col $ do
+      el ~ bold $ "White Space: text wrap"
+
+      row ~ gap 30 . pad 10 $ do
+        -- inspired from https://css-tricks.com/almanac/properties/w/whitespace/
+        whiteSpaces Wrap "Wrap"
+        whiteSpaces PreWrap "PreWrap"
+        whiteSpaces PreLine "PreLine"
+        whiteSpaces BreakSpaces "BreakSpaces"
+        whiteSpaces NoWrap "NoWrap"
+        whiteSpaces Pre "Pre"
+  where
+    wSpace c align wrap t = col $ do
+                              el t
+                              el ~ pad 10 . textAlign align . whiteSpace wrap . border 1 . overflow Hidden $ c
+    intersperseWithSpace sp ts = Html () $ intersperse sp $ map Text ts
+    whiteSpaces algn algnT = col ~ width 100 . grow $ do
+                           el algnT
+                           col ~ pad 20 . gap 20 . border 1 $ do
+                             let t sp = intersperseWithSpace (Raw sp) $ T.words lorem
+                             wSpace (t " ") AlignLeft algn "[space]"
+                             wSpace (t "&thinsp;") AlignLeft algn "&thinsp;"
+                             wSpace (t "&nbsp;") AlignLeft algn "&nbsp;"
+                             wSpace (t "&emsp;") AlignLeft algn "&emsp;"
+                             wSpace (t "&zwj;") AlignLeft algn "&zwj;"
+                             wSpace (t "&zwj;") AlignLeft algn "&zwj;"
+                             wSpace (t "&zwnj;") AlignLeft algn "&zwnj;"
 
 longContent :: Html ()
 longContent = do
@@ -402,6 +434,7 @@ examples = col ~ pad 20 . gap 15 $ do
   link "holygrail" "Holy Grail"
   link "stacks" "Stacks"
   link "text" "Text"
+  link "whitespace-text" "Whitespace Text"
   link "inputs" "Inputs"
   link "tooltips" "Tooltips"
   link "long-content" "Long Content"
@@ -418,6 +451,7 @@ app req respond = do
     ["holygrail"] -> view holygrail
     ["stacks"] -> view stacks
     ["text"] -> view texts
+    ["whitespace-text"] -> view whiteSpaceText
     ["inputs"] -> view inputs
     ["tooltips"] -> view tooltips
     ["long-content"] -> view longContent
