@@ -229,18 +229,6 @@ texts = col ~ gap 10 . pad 20 $ do
   --   li (list Disc) "second"
   --   li (list None) "third"
 
-  el ~ bold $ "flexWrap"
-  row ~ gap 5 . width 200 . flexWrap WrapReverse $ do
-    el ~ border 1 . pad 5 $ "one"
-    el ~ border 1 . pad 5 $ "two"
-    el ~ border 1 . pad 5 $ "three"
-    el ~ border 1 . pad 5 $ "four"
-    el ~ border 1 . pad 5 $ "five"
-    el ~ border 1 . pad 5 $ "six"
-    el ~ border 1 . pad 5 $ "seven"
-    el ~ border 1 . pad 5 $ "eight"
-    el ~ border 1 . pad 5 $ "nine"
-
   el ~ bold $ "White Space: text wrap"
   el ~ border 1 . width 200 . whiteSpace NoWrap . overflow Hidden $ text lorem
   el ~ border 1 . width 200 . whiteSpace Wrap $ text lorem
@@ -274,45 +262,72 @@ longContent = do
                 row $ do
                   tag "div" ~ bg Light . pad (XY 10 2) . fontSize 16 . textAlign AlignCenter $ text lang
 
-flexTutorial :: Html ()
-flexTutorial = col ~ grow $ do
+layout :: Html ()
+layout = col ~ grow $ do
   row  ~ pad 10 . gap 30 $ do
     col $ do
-      space
-      el "flex-direction: row"
-      flexDir row
-    col $ do
-      space
-      el "flex-direction: column"
-      flexDir col
-    col $ do
-      space
-      el "flex-wrap: wrap"
-      flexWrap' Wrap
-    col $ do
-      space
-      el "flex-wrap: wrap-reverse"
-      flexWrap' WrapReverse
-  row  ~ pad 10 . gap 30 $ do
-    col ~ grow $ do
-      el "flex-grow"
-      flexGrow 
-  row  ~ pad 10 . gap 30 . grow $ do
-    col ~ pad 10 $ do
-      el "flex-start"
-      flexStart
-    col ~ pad 10 . grow $ do
-      el "flex-center"
-      flexCenter
-    col ~ pad 10 . grow $ do
-      el "flex-end"
-      flexEnd
-    col ~ pad 10 . grow $ do
-      el "space-between"
-      spaceBetween
-    col ~ pad 10 . grow $ do
-      el "space-around"
-      spaceAround
+      el ~ bold $ "spaces around & between elements"
+      row ~ gap 30 $ do
+        col ~ pad 10 . grow $ do
+          el "pad 20"
+          row ~ flexCol . border 1 . pad 20 . bg Warning $ do
+            el ~ border 1 . bg White $ "one"
+            el ~ border 1 . bg White $ "two"
+            el ~ border 1 . bg White $ "three"
+        col ~ pad 10 . grow $ do
+          el "gap 20"
+          row ~ flexCol . border 1 . gap 20 . bg Warning $ do
+            el ~ border 1 . bg White $ "one"
+            el ~ border 1 . bg White $ "two"
+            el ~ border 1 . bg White $ "three"
+        col ~ pad 10 . grow $ do
+          el "pad 20 . gap 20"
+          row ~ flexCol . border 1 . pad 20 . gap 20 . bg Warning $ do
+            el ~ border 1 . bg White $ "one"
+            el ~ border 1 . bg White $ "two"
+            el ~ border 1 . bg White $ "three"
+  -- inspired from: https://css-tricks.com/snippets/css/a-guide-to-flexbox/
+  col ~ pad 10 . gap 30 . grow $ do
+    el ~ bold $ "flexWrap"
+    row  ~ pad 10 . gap 30 $ do
+      col $ do
+        space
+        el "flex-direction: row"
+        flexDir row
+      col $ do
+        space
+        el "flex-direction: column"
+        flexDir col
+      col $ do
+        space
+        el "flex-wrap: wrap"
+        flexWrap' Wrap
+      col $ do
+        space
+        el "flex-wrap: wrap-reverse"
+        flexWrap' WrapReverse
+    row  ~ pad 10 . gap 30 $ do
+      col ~ grow $ do
+        el "flex-grow"
+        flexGrow
+    col ~ pad 10 . gap 30 . grow $ do
+      el ~ bold $ "vertical positioning by using `space`"
+      row  ~ pad 10 . gap 30 . grow $ do
+        col ~ pad 10 $ do
+          el "flex-start"
+          flexStart
+        col ~ pad 10 . grow $ do
+          el "flex-center"
+          flexCenter
+        col ~ pad 10 . grow $ do
+          el "flex-end"
+          flexEnd
+        col ~ pad 10 . grow $ do
+          el "space-between"
+          spaceBetween
+        col ~ pad 10 . grow $ do
+          el "space-around"
+          spaceAround
   where
     box x = el ~ border 1 . pad 10 $ x
     flexDir dir = do
@@ -353,16 +368,17 @@ flexTutorial = col ~ grow $ do
     r3 = row $ do
           box "eight"
           box "nine"
+    spaceYellow = el ~ bg Warning . grow $ space
     flexStart = box ~ grow $ do
       r1 >> r2 >> r3
     flexCenter = col ~ border 1 . pad 10 . grow $ do
-         space >> r1 >> r2 >> r3 >> space
+         spaceYellow >> r1 >> r2 >> r3 >> spaceYellow
     flexEnd = col ~ border 1 . pad 10 . grow $ do
-         space >> r1 >> r2 >> r3
+         spaceYellow >> r1 >> r2 >> r3
     spaceBetween = col ~ border 1 . pad 10 . grow $ do
-         r1 >> space >> r2 >> space >> r3
-    spaceAround= col ~ border 1 . pad 10 . grow $ do
-         space >> r1 >> space >> r2 >> space >> r3 >> space
+         r1 >> spaceYellow >> r2 >> spaceYellow >> r3
+    spaceAround = col ~ border 1 . pad 10 . grow $ do
+         spaceYellow >> r1 >> spaceYellow >> r2 >> spaceYellow >> r3 >> spaceYellow
 
 -- rows = textAlign AlignCenter . border 1 . borderColor GrayLight
 
@@ -377,10 +393,9 @@ examples = col ~ pad 20 . gap 15 $ do
   link "inputs" "Inputs"
   link "tooltips" "Tooltips"
   link "long-content" "Long Content"
-  link "flexTutorial" "Flex Tutorial"
+  link "layout" "Layout"
  where
   link href = tag "a" @ att "href" href ~ color Primary
-
 
 app :: Application
 app req respond = do
@@ -394,7 +409,7 @@ app req respond = do
     ["inputs"] -> view inputs
     ["tooltips"] -> view tooltips
     ["long-content"] -> view longContent
-    ["flexTutorial"] -> view flexTutorial
+    ["layout"] -> view layout
     ["static", "reset.css"] -> reset
     _ -> notFound
  where
