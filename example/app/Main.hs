@@ -207,6 +207,8 @@ stacks = col ~ grow $ do
 
     col ~ border 1 . popup (TR 5 5) $ "I AM AN ELEMENT"
 
+alignToBaseline :: Styleable h => CSS h -> CSS h
+alignToBaseline = utility "align-to-baseline" ["align-items" :. "baseline"]
 
 texts :: Html ()
 texts = col ~ gap 10 . pad 20 $ do
@@ -220,6 +222,22 @@ texts = col ~ gap 10 . pad 20 $ do
   el ~ italic $ "Italic Text"
   el ~ underline $ "Underline Text"
   el ~ bold $ "Bold Text"
+
+  el ~ bold $ "text baseline alignment"
+  row ~ gap 20 $ do
+    col $ do
+      el "without baseline alignment"
+      row ~ border 1 . gap 10 . pad 10 $ do
+        el ~ fontSize 12 $ "small"
+        el ~ fontSize 50 $ "big"
+        el ~ fontSize 22 $ "middle"
+
+    col $ do
+      el "with baseline alignment"
+      row ~ alignToBaseline . border 1 . gap 10 . pad 10 $ do
+        el ~ fontSize 12 $ "small"
+        el ~ fontSize 50 $ "big"
+        el ~ fontSize 22 $ "middle"
 
   -- ol [] $ do
   --   let nums = list Decimal
