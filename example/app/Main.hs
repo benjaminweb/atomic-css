@@ -232,10 +232,6 @@ texts = col ~ gap 10 . pad 20 $ do
   --   li (list Disc) "second"
   --   li (list None) "third"
 
-  el ~ bold $ "White Space: text wrap"
-  el ~ border 1 . width 200 . whiteSpace NoWrap . overflow Hidden $ text lorem
-  el ~ border 1 . width 200 . whiteSpace Wrap $ text lorem
-
   el ~ bold $ "css order"
   el ~ flexCol . flexRow $ do
     text "WOOT"
